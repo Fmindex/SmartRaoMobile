@@ -35,6 +35,7 @@ export default class App extends React.Component {
         temp,
         toggleButtonActive: true
       });
+      clearTimeout(this.timer);
     });
   }
 
@@ -44,18 +45,28 @@ export default class App extends React.Component {
 
   fireToggleRequest() {
     const { on } = this.state;
-    console.log(this.props.navigation.state.params);
     this.setState({
       toggleButtonActive: false
     });
     Axios.get(this.baseUrl + (!on ? 'on' : 'off'), {
       headers: { Token: this.props.navigation.state.params.token }
-    }).catch(error => {
-      this.setState({
-        toggleButtonActive: true
+    })
+      .then(() => {
+        this.timer = setTimeout(() => {
+          if (!this.state.toggleButtonActive) {
+            this.setState({
+              toggleButtonActive: true
+            });
+            alert('NodeMCU is not responding, Please try again');
+          }
+        }, 5000);
+      })
+      .catch(error => {
+        this.setState({
+          toggleButtonActive: true
+        });
+        alert(error);
       });
-      alert(error);
-    });
   }
 
   logout() {

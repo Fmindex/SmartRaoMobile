@@ -15,7 +15,7 @@ export default class App extends React.Component {
       text: 'Please login to continue',
       username: 'naisk133@gmail.com',
       password: '123456',
-      toggleButtonActive: true
+      loginButtonActive: true
     };
     this.login = this.login.bind(this);
   }
