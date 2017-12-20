@@ -22,8 +22,10 @@
     "axios": "^0.17.1",
     "expo": "^23.0.4",
     "firebase": "^4.8.0",
+    "firebase-react-native": "0.0.3",
     "microgear": "^0.8.1",
     "react": "16.0.0",
-    "react-native": "0.50.3"
+    "react-native": "0.50.3",
+    "react-navigation": "^1.0.0-beta.21"
   }
 }
