@@ -35,7 +35,7 @@ export default class App extends React.Component {
 
   login() {
     this.setState({
-      text: '',
+      text: 'Loging in...',
       loginButtonActive: false
     });
     firebase
@@ -101,7 +101,7 @@ export default class App extends React.Component {
                 style={styles.textInput}
               />
             </View>
-            <TouchableOpacity style={styles.button} onPress={this.login} disabled={!this.state.loginButtonActive}>
+            <TouchableOpacity style={this.state.loginButtonActive ? styles.button : styles.inactiveButton} onPress={this.login} disabled={!this.state.loginButtonActive}>
               <Text style={styles.buttonText} >LOGIN</Text>
             </TouchableOpacity>
           </View>
@@ -122,10 +122,22 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   button: {
-    width: 240,
+    width: 192,
     height: 44,
     borderRadius: 25,
     backgroundColor: 'rgb(255, 110, 164)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 20,
+    shadowColor: '#000000',
+    shadowOffset: {width: 3, height: 3},
+    shadowOpacity: 0.1,
+  },
+  inactiveButton: {
+    width: 240,
+    height: 44,
+    borderRadius: 25,
+    backgroundColor: 'rgb(175, 175, 175)',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 20,
