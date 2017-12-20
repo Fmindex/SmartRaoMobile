@@ -1,7 +1,8 @@
-import React from 'react';
-import { StyleSheet, Text, View, Button, TextInput } from 'react-native';
-import firebase from 'firebase';
+import { Button, StyleSheet, Text, TextInput, View } from 'react-native';
+
 import Axios from 'axios';
+import React from 'react';
+import firebase from 'firebase';
 
 export default class App extends React.Component {
   static navigationOptions = {
@@ -14,25 +15,28 @@ export default class App extends React.Component {
       text: 'Hello',
       username: 'naisk133@gmail.com',
       password: '123456',
-      auth: null,
       on: false,
+      manual: false,
       snapshot: {},
-      toggleButtonActive: true
+      toggleButtonActive: true,
+      manualButtonActive: true
     };
     this.baseUrl = 'http://192.168.43.181:3000/';
     this.fireToggleRequest = this.fireToggleRequest.bind(this);
+    this.manualToggleRequest = this.manualToggleRequest.bind(this);
   }
   componentWillMount() {
     console.log('will mount');
     this.databaseRef = firebase.database().ref('/');
     this.databaseRef.on('value', snapshot => {
       console.log(snapshot);
-      const { humid, on, temp } = snapshot.val();
-      console.log(humid, on, temp);
+      const { humid, on, temp, manual } = snapshot.val();
+      console.log(humid, on, temp, manual);
       this.setState({
         humid,
         on,
         temp,
+        manual,
         toggleButtonActive: true
       });
       clearTimeout(this.timer);
@@ -69,6 +73,27 @@ export default class App extends React.Component {
       });
   }
 
+  manualToggleRequest() {
+    const { manual } = this.state;
+    this.setState({
+      manualButtonActive: false
+    });
+    Axios.get(this.baseUrl + 'manual/' + !manual, {
+      headers: { Token: this.props.navigation.state.params.token }
+    })
+      .then(msg =>
+        this.setState({
+          manualButtonActive: true
+        })
+      )
+      .catch(err => {
+        this.setState({
+          manualButtonActive: true
+        });
+        alert(err);
+      });
+  }
+
   logout() {
     firebase
       .auth()
@@ -81,6 +106,11 @@ export default class App extends React.Component {
     return (
       <View style={styles.container}>
         <Button
+          title={this.state.manual ? 'Manual' : 'Auto'}
+          onPress={this.manualToggleRequest}
+          disabled={!this.state.manualButtonActive}
+        />
+        <Button
           title={this.state.on ? 'On' : 'Off'}
           onPress={this.fireToggleRequest}
           disabled={!this.state.toggleButtonActive}
@@ -89,6 +119,7 @@ export default class App extends React.Component {
         <Text>Current temp: {this.state.temp}</Text>
         <Text>Current humid: {this.state.humid}</Text>
         <Button title="Logout" onPress={this.logout} />
+        <Text>{JSON.stringify(this.state)}</Text>
       </View>
     );
   }
